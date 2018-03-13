@@ -640,7 +640,7 @@
             "title": "metric.reporters",
             "description": "Java class to collect/report broker metrics",
             "type": "string",
-            "default": "com.airbnb.kafka.kafka09.StatsdMetricsReporter"
+            "default": "com.airbnb.kafka.kafka09.StatsdMetricsReporter,io.confluent.metrics.reporter.ConfluentMetricsReporter"
           },
           "metrics_num_samples": {
             "title": "metrics.num.samples",
@@ -671,6 +671,30 @@
             "description": "How far a ZK follower can be behind a ZK leader",
             "type": "integer",
             "default": 2000
+          },
+          "confluent_support_metrics_enable": {
+            "default": false,
+            "description": "Enable the Metrics feature to collect and report support metrics",
+            "title": "confluent.support.metrics.enable",
+            "type": "boolean"
+          },
+          "confluent_support_customer_id": {
+            "default": "anonymous",
+            "description": "The customer ID under which support metrics will be collected and reported.   When set to 'anonymous', only a reduced set of metrics is collected and reported.",
+            "title": "confluent.support.customer.id",
+            "type": "string"
+          },
+          "confluent_metrics_reporter_topic": {
+            "default": "_confluent-metrics",
+            "description": "Internal metrics topic (DO NOT CHANGE)",
+            "title": "confluent.metrics.reporter.topic",
+            "type": "string"
+          },
+          "confluent_metrics_reporter_topic_replicas": {
+            "default": 3,
+            "description": "Replication factor for the internal metrics topic",
+            "title": "confluent.metrics.reporter.topic.replicas",
+            "type": "integer"
           }
         }
       }

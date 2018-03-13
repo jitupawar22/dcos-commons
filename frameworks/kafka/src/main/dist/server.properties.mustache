@@ -270,3 +270,41 @@ zookeeper.session.timeout.ms={{KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS}}
 zookeeper.sync.time.ms={{KAFKA_ZOOKEEPER_SYNC_TIME_MS}}
 
 ########################################################################
+
+############## Confluent Platform Settings ##############
+confluent.support.metrics.enable={{KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE}}
+confluent.support.customer.id={{KAFKA_CONFLUENT_SUPPORT_CUSTOMER_ID}}
+confluent.metrics.reporter.bootstrap.servers={{KAFKA_CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS}}
+confluent.metrics.reporter.zookeeper.connect={{KAFKA_ZOOKEEPER_URI}}
+confluent.metrics.reporter.topic={{KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC}}
+confluent.metrics.reporter.topic.replicas={{KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS}}
+
+
+{{#SECURITY_KERBEROS_ENABLED}}
+# Kerberos is enabled, include kerberos settings for the metrics reporter.
+confluent.metrics.reporter.sasl.mechanism=GSSAPI
+
+{{#SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}
+# Transport encryption is enabled, use SASL_SSL
+confluent.metrics.reporter.security.protocol=SASL_SSL
+{{/SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}
+{{^SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}
+# Transport encryption is not enabled, use SASL_PLAINTEXT
+confluent.metrics.reporter.security.protocol=SASL_PLAINTEXT
+{{/SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}
+{{/SECURITY_KERBEROS_ENABLED}}
+
+{{#SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}
+# Transport encryption is enabled, include the SSL settings for the metrics reporter.
+confluent.metrics.reporter.ssl.keystore.location={{MESOS_SANDBOX}}/broker.keystore
+confluent.metrics.reporter.ssl.keystore.password=notsecure
+confluent.metrics.reporter.ssl.key.password=notsecure
+confluent.metrics.reporter.ssl.truststore.location={{MESOS_SANDBOX}}/broker.truststore
+confluent.metrics.reporter.ssl.truststore.password=notsecure
+confluent.metrics.reporter.ssl.enabled.protocols=TLSv1.2
+{{^SECURITY_KERBEROS_ENABLED}}
+
+# Kerberos is not enabled, so SSL is the security protocol
+confluent.metrics.reporter.security.protocol=SSL
+{{/SECURITY_KERBEROS_ENABLED}}
+{{/SECURITY_TRANSPORT_ENCRYPTION_ENABLED}}

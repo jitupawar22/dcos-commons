@@ -4,7 +4,7 @@
       "jre-tar-gz": "{{jre-url}}",
       "libmesos-bundle-tar-gz": "{{libmesos-bundle-url}}",
       "bootstrap-zip": "{{artifact-dir}}/bootstrap.zip",
-      "kafka-tgz": "https://s3-us-west-1.amazonaws.com/px-dcos/confluent-oss-3.3.0-2.11.tar.gz",
+      "kafka-tgz": "https://packages.confluent.io/archive/3.3/confluent-3.3.0-2.11.tar.gz",
       "kafka-jre-tar-gz": "{{jre-url}}",
       "kafka-scheduler-zip": "{{artifact-dir}}/kafka-scheduler.zip",
       "executor-zip": "{{artifact-dir}}/executor.zip",

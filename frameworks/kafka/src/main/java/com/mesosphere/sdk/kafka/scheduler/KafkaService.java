@@ -1,5 +1,6 @@
 package com.mesosphere.sdk.kafka.scheduler;
 
+import com.mesosphere.sdk.api.EndpointUtils;
 import com.mesosphere.sdk.api.types.EndpointProducer;
 import com.mesosphere.sdk.curator.CuratorUtils;
 import com.mesosphere.sdk.kafka.api.BrokerResource;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class KafkaService extends DefaultService {
     private static final String KAFKA_ZK_URI_ENV = "KAFKA_ZOOKEEPER_URI";
+    private static final String CONFLUENT_METRICS_BOOTSTRAP_ENV = "KAFKA_CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS";
 
     public KafkaService(File pathToYamlSpecification) throws Exception {
         super(createSchedulerBuilder(pathToYamlSpecification));
@@ -43,9 +45,23 @@ public class KafkaService extends DefaultService {
         }
         LOGGER.info("Running Kafka with zookeeper path: {}", kafkaZookeeperUri);
 
+        String confluentMetricsBootstrapList = "";
+        if (System.getenv("TASKCFG_ALL_SECURITY_KERBEROS_ENABLED") == null) {
+            String vipName = "broker";
+            int vipPort = 9092;
+            if (System.getenv("TASKCFG_ALL_SECURITY_TRANSPORT_ENCRYPTION_ENABLED") != null) {
+                vipName = "broker-tls";
+                vipPort = 9093;
+            }
+            confluentMetricsBootstrapList = EndpointUtils.toVipEndpoint(
+                    rawServiceSpec.getName(),
+                    new EndpointUtils.VipInfo(vipName, vipPort));
+        }
+
         DefaultScheduler.Builder schedulerBuilder = DefaultScheduler.newBuilder(
                 DefaultServiceSpec.newGenerator(rawServiceSpec, schedulerFlags)
                         .setAllPodsEnv(KAFKA_ZK_URI_ENV, kafkaZookeeperUri)
+                        .setAllPodsEnv(CONFLUENT_METRICS_BOOTSTRAP_ENV, confluentMetricsBootstrapList)
                         .build(), schedulerFlags)
                 .setPlansFrom(rawServiceSpec);
 
