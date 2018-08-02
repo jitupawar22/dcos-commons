@@ -26,6 +26,9 @@ pods:
     placement: {{NODE_PLACEMENT}}
     uris:
       - {{SYSCTL_URI}}
+    {{#PRE_RESERVED_ROLE}}
+    pre-reserved-role: {{PRE_RESERVED_ROLE}}
+    {{/PRE_RESERVED_ROLE}}
     tasks:
       install:
         goal: RUNNING
@@ -179,6 +182,9 @@ pods:
     count: 3
     image: {{ETCD_IMAGE}}
     placement: {{ETCD_PLACEMENT}}
+    {{#PRE_RESERVED_ROLE}}
+    pre-reserved-role: {{PRE_RESERVED_ROLE}}
+    {{/PRE_RESERVED_ROLE}}
     uris:
       - {{BOOTSTRAP_URI}}
     tasks:
@@ -208,6 +214,9 @@ pods:
     user: {{SERVICE_USER}}
     count: 1
     image: {{ETCD_IMAGE}}
+    {{#PRE_RESERVED_ROLE}}
+    pre-reserved-role: {{PRE_RESERVED_ROLE}}
+    {{/PRE_RESERVED_ROLE}}
     tasks:
       start:
         goal: RUNNING
@@ -229,6 +238,11 @@ pods:
     placement: {{LIGHTHOUSE_PLACEMENT}}
     {{#LIGHTHOUSE_PUBLIC_AGENT}}
     pre-reserved-role: slave_public
+    {{/LIGHTHOUSE_PUBLIC_AGENT}}
+    {{^LIGHTHOUSE_PUBLIC_AGENT}}
+    {{#PRE_RESERVED_ROLE}}
+    pre-reserved-role: {{PRE_RESERVED_ROLE}}
+    {{/PRE_RESERVED_ROLE}}
     {{/LIGHTHOUSE_PUBLIC_AGENT}}
     tasks:
       start:
@@ -281,6 +295,9 @@ pods:
   dummy-pod:
     user: {{SERVICE_USER}}
     count: 1
+    {{#PRE_RESERVED_ROLE}}
+    pre-reserved-role: {{PRE_RESERVED_ROLE}}
+    {{/PRE_RESERVED_ROLE}}
     tasks:
       start:
         goal: RUNNING
