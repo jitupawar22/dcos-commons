@@ -10,6 +10,8 @@ import sdk_jobs
 import sdk_plan
 import sdk_utils
 
+from datetime import datetime
+
 log = logging.getLogger(__name__)
 
 PACKAGE_NAME = 'portworx-cassandra'
@@ -202,3 +204,9 @@ def run_backup_and_restore(
     # Delete data in preparation for any other backup tests
     sdk_jobs.run_job(delete_data_job)
     sdk_jobs.run_job(verify_deletion_job)
+
+
+def getDateTimeInString():
+    (dt, micro) = datetime.utcnow().strftime('%Y%m%d%H%M%S.%f').split('.')
+    dt = "%s%03d" % (dt, int(micro) / 1000)
+    return dt

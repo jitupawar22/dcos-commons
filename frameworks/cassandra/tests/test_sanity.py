@@ -13,6 +13,8 @@ from tests import config
 @pytest.fixture(scope='module', autouse=True)
 def configure_package(configure_security):
     test_jobs = []
+    dt = config.getDateTimeInString()
+
     try:
         test_jobs = config.get_all_jobs(node_address=config.get_foldered_node_address())
         # destroy/reinstall any prior leftover jobs, so that they don't touch the newly installed service:
@@ -24,7 +26,7 @@ def configure_package(configure_security):
             config.PACKAGE_NAME,
             config.get_foldered_service_name(),
             config.DEFAULT_TASK_COUNT,
-            additional_options={"service": {"name": config.get_foldered_service_name()} })
+            additional_options={"service": {"name": config.get_foldered_service_name()},"nodes": {"portworx_volume_name": dt} })
 
         yield  # let the test session execute
     finally:

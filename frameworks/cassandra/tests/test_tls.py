@@ -44,6 +44,7 @@ def service_account():
 @pytest.fixture(scope='module')
 def cassandra_service_tls(service_account):
     sdk_install.uninstall(package_name=config.PACKAGE_NAME, service_name=config.SERVICE_NAME)
+    dt = config.getDateTimeInString()
     sdk_install.install(
         config.PACKAGE_NAME,
         service_account,
@@ -57,6 +58,9 @@ def cassandra_service_tls(service_account):
                         "enabled": True
                     }
                 }
+            },
+            "nodes": {
+                "portworx_volume_name": dt
             }
         }
     )

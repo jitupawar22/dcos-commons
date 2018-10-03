@@ -13,6 +13,7 @@ no_strict_for_azure = pytest.mark.skipif(os.environ.get("SECURITY") == "strict",
 @pytest.fixture(scope='module', autouse=True)
 def configure_package(configure_security):
     test_jobs = []
+    dt = config.getDateTimeInString()
     try:
         test_jobs = config.get_all_jobs(node_address=config.get_foldered_node_address())
         # destroy/reinstall any prior leftover jobs, so that they don't touch the newly installed service:
@@ -23,9 +24,9 @@ def configure_package(configure_security):
         # user=root because Azure CLI needs to run in root...
         # We don't run the Azure tests in strict however, so don't set it then.
         if os.environ.get("SECURITY") == "strict":
-            additional_options={"service": { "name": config.get_foldered_service_name() } }
+            additional_options={"service": { "name": config.get_foldered_service_name() },"nodes": {"portworx_volume_name": dt} }
         else:
-            additional_options={"service": { "name": config.get_foldered_service_name(), "user": "root" } }
+            additional_options={"service": { "name": config.get_foldered_service_name(), "user": "root" },"nodes": {"portworx_volume_name": dt} }
 
         sdk_install.install(
             config.PACKAGE_NAME,

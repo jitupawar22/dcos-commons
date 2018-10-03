@@ -54,6 +54,7 @@ def cassandra_service(service_account):
     A pytest fixture that installs the cassandra service.
     On teardown, the service is uninstalled.
     """
+    dt = config.getDateTimeInString()
     options = {
         "service": {
             "name": config.SERVICE_NAME,
@@ -61,7 +62,10 @@ def cassandra_service(service_account):
             # we need to install Cassandra with a service account to start with.
             "service_account": service_account["name"],
             "service_account_secret": service_account["secret"],
-        }
+        },
+        "nodes": {
+            "portworx_volume_name": dt
+        }        
     }
 
     sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)

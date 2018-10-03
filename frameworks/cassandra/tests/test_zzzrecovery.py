@@ -18,9 +18,11 @@ log = logging.getLogger(__name__)
 
 @pytest.fixture(scope='module', autouse=True)
 def configure_package(configure_security):
+    additional_options={"nodes": {"portworx_volume_name": dt} }
+
     try:
         sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
-        sdk_install.install(config.PACKAGE_NAME, config.SERVICE_NAME, config.DEFAULT_TASK_COUNT)
+        sdk_install.install(config.PACKAGE_NAME, config.SERVICE_NAME, config.DEFAULT_TASK_COUNT,additional_options)
 
         yield  # let the test session execute
     finally:
