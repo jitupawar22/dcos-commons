@@ -81,6 +81,27 @@ def cassandra_service(service_account):
     finally:
         sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
 
+# Create new job plan with unique db and table names.
+# This should be called before every tests from tls_toggle
+def _create_new_job_plan():
+    key_id = os.getenv('AWS_ACCESS_KEY_ID')
+    if not key_id:
+        assert False, 'AWS credentials are required for this test. Disable test with e.g. TEST_TYPES="sanity and not aws"'
+
+    key_space_name = px_get_uuid()
+    key_space_name = key_space_name + '1 ' + key_space_name + '2'
+    plan_parameters = {
+        'AWS_ACCESS_KEY_ID': key_id,
+        'AWS_SECRET_ACCESS_KEY': os.getenv('AWS_SECRET_ACCESS_KEY'),
+        'AWS_REGION': os.getenv('AWS_REGION', 'us-west-2'),
+        'S3_BUCKET_NAME': os.getenv('AWS_BUCKET_NAME', 'infinity-framework-test'),
+        'SNAPSHOT_NAME': str(uuid.uuid1()),
+        'CASSANDRA_KEYSPACES': key_space_name,
+    }
+
+    # Run backup plan, uploading snapshots and schema to the cloudddd
+    sdk_plan.start_plan(config.SERVICE_NAME, 'toggle-s3', parameters=plan_parameters)
+    sdk_plan.wait_for_completed_plan(config.SERVICE_NAME, 'toggle-s3')
 
 @pytest.mark.sanity
 @pytest.mark.tls
@@ -102,10 +123,10 @@ def test_enable_tls_and_plaintext(cassandra_service, dcos_ca_bundle):
     Tests writing, reading and deleting data over TLS but still accepting
     plaintext connections.
     """
+    _create_new_job_plan()   
     update_service_transport_encryption(
         cassandra_service, enabled=True, allow_plaintext=True)
     verify_client_can_write_read_and_delete(dcos_ca_bundle)
-
 
 @pytest.mark.sanity
 @pytest.mark.tls
@@ -115,6 +136,7 @@ def test_disable_plaintext(cassandra_service, dcos_ca_bundle):
     """
     Tests writing, reading and deleting data over a TLS connection.
     """
+    _create_new_job_plan()   
     update_service_transport_encryption(
         cassandra_service, enabled=True, allow_plaintext=False)
     verify_client_can_write_read_and_delete(dcos_ca_bundle)
@@ -128,6 +150,7 @@ def test_disable_tls(cassandra_service):
     """
     Tests writing, reading and deleting data over a plaintext connection.
     """
+    _create_new_job_plan()   
     update_service_transport_encryption(
         cassandra_service, enabled=False, allow_plaintext=False)
     verify_client_can_write_read_and_delete()
@@ -155,7 +178,6 @@ def test_enabling_then_disabling_tls(cassandra_service, dcos_ca_bundle):
     verify_data_job = config.get_verify_data_job()
     with sdk_jobs.InstallJobContext([verify_data_job]):
         sdk_jobs.run_job(verify_data_job)
-
 
 def verify_client_can_write_read_and_delete(dcos_ca_bundle=None):
     write_data_job = config.get_write_data_job(dcos_ca_bundle=dcos_ca_bundle)

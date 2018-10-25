@@ -9,6 +9,7 @@ import sdk_hosts
 import sdk_jobs
 import sdk_plan
 import sdk_utils
+import uuid
 
 log = logging.getLogger(__name__)
 
@@ -202,3 +203,8 @@ def run_backup_and_restore(
     # Delete data in preparation for any other backup tests
     sdk_jobs.run_job(delete_data_job)
     sdk_jobs.run_job(verify_deletion_job)
+
+# Function to generate and return unique string.
+def px_get_uuid():
+    uid = uuid.uuid4()
+    return str(uid)[:8]

@@ -60,7 +60,7 @@ def cassandra_service_tls(service_account):
             }
         }
     )
-
+    
     sdk_plan.wait_for_completed_deployment(config.SERVICE_NAME)
 
     # Wait for service health check to pass
@@ -91,13 +91,16 @@ def test_tls_connection(cassandra_service_tls, dcos_ca_bundle):
         key_id = os.getenv('AWS_ACCESS_KEY_ID')
         if not key_id:
             assert False, 'AWS credentials are required for this test. Disable test with e.g. TEST_TYPES="sanity and not aws"'
+
+        key_space_name = px_get_uuid()
+        key_space_name = key_space_name + '1 ' + key_space_name + '2'
         plan_parameters = {
             'AWS_ACCESS_KEY_ID': key_id,
             'AWS_SECRET_ACCESS_KEY': os.getenv('AWS_SECRET_ACCESS_KEY'),
             'AWS_REGION': os.getenv('AWS_REGION', 'us-west-2'),
             'S3_BUCKET_NAME': os.getenv('AWS_BUCKET_NAME', 'infinity-framework-test'),
             'SNAPSHOT_NAME': str(uuid.uuid1()),
-            'CASSANDRA_KEYSPACES': '"testspace1 testspace2"',
+            'CASSANDRA_KEYSPACES': key_space_name,
         }
 
         # Run backup plan, uploading snapshots and schema to the cloudddd
