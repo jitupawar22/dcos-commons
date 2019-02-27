@@ -18,6 +18,9 @@ def configure_package(configure_security):
     try:
         sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
         sdk_install.portworx_cleanup()
+
+        # Lets use internal kvdb for sanity tests. So keep kvdb server empty
+        config.PX_NODE_OPTIONS["node"]["kvdb_servers"] = ""
         # The sdk_install installs portworx framework and CLI commands for portworx
         sdk_install.install(
             config.PACKAGE_NAME,

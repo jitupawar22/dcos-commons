@@ -76,6 +76,7 @@ def portworx_service(service_account):
     px_cluster_name = "portworx-dcos-" + config.get_random_string(12)
     config.PX_NODE_OPTIONS["node"]["portworx_cluster"] = px_cluster_name
     config.PX_NODE_OPTIONS["node"]["portworx_image"] = os.environ['PX_OLD_IMAGE']
+    config.PX_NODE_OPTIONS["node"]["internal_kvdb"] = false
     try:
         sdk_install.install(
             config.PACKAGE_NAME,
