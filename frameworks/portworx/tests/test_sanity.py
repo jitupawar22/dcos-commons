@@ -41,6 +41,20 @@ def test_verify_install():
     log.info("Portworx service status is: {}".format(px_status))
     assert px_status == 2, "PORTWORX: service status returned: {}".format(px_status)
 
+# Log portworx and DCOS versions
+@pytest.mark.sanity
+def test_log_px_and_dcos_version():
+    pod_count, pod_list = px_utils.get_px_pod_list()
+    if pod_count <= 0:
+        log.info("PORTWORX: Pod count is: {}".format(pod_count))
+        raise
+    pod_name = pod_list[1]
+    px_version = px_utils.px_get_portworx_version(pod_name)
+    log.info("PORTWORX: Portworx version is: {}".format(px_version))
+
+    dcos_version = dcos_utils.get_dcos_version()
+    log.info("PORTWORX: DCOS version is: {}".format(dcos_version))
+
 # Verify pod list is as per deployment
 @pytest.mark.sanity
 def test_verify_pod_list():
@@ -62,6 +76,7 @@ def test_verify_config_params():
         log.info("PORTWORX: Px kvdb server not as per provided configuation, provided: {}, obtained: {}".format(config.PX_KVDB_SERVER, px_kvdb))
         raise
 
+    log.info("PORTWORX: Portworx image is: {}".format(px_image))
     if px_image.strip('\"') != config.PX_IMAGE:
         log.info("PORTWORX: Px Image name is not as per provided configuation, provided: {}, obtained: {}".format(config.PX_IMAGE, px_image))
         raise
