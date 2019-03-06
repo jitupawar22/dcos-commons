@@ -19,8 +19,6 @@ def configure_package(configure_security):
         sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
         sdk_install.portworx_cleanup()
 
-        # Lets use internal kvdb for sanity tests. So keep kvdb server empty
-        config.PX_NODE_OPTIONS["node"]["kvdb_servers"] = ""
         # The sdk_install installs portworx framework and CLI commands for portworx
         sdk_install.install(
             config.PACKAGE_NAME,
@@ -33,6 +31,7 @@ def configure_package(configure_security):
         return
 
 # Verify portworx installation
+@pytest.mark.install
 @pytest.mark.sanity
 def test_verify_install():
     shakedown.service_healthy(config.SERVICE_NAME)
@@ -42,6 +41,7 @@ def test_verify_install():
     assert px_status == 2, "PORTWORX: service status returned: {}".format(px_status)
 
 # Log portworx and DCOS versions
+@pytest.mark.install
 @pytest.mark.sanity
 def test_log_px_and_dcos_version():
     pod_count, pod_list = px_utils.get_px_pod_list()
@@ -238,11 +238,13 @@ def test_upgrade_framework():
         additional_options=sdk_install.merge_dictionaries(sdk_networks.ENABLE_VIRTUAL_NETWORKS_OPTIONS, config.PX_NODE_OPTIONS))
 
 # Uninstall portworx
+@pytest.mark.install
 @pytest.mark.sanity
 def test_uninstall_package():
     sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
 
 # Do post uninstall cleanup
+@pytest.mark.install
 @pytest.mark.sanity
 def test_post_uninstall_cleanup():
     sdk_install.portworx_cleanup()

@@ -34,7 +34,7 @@ PX_CLUSTER_NAME = "portworx-dcos-" + get_random_string(16)
 
 PX_NODE_OPTIONS = { "node": { "portworx_options": PX_OPTIONS,
                             "kvdb_servers": PX_KVDB_SERVER,
-                            "internal_kvdb": true,
+                            "internal_kvdb": False,
                             "count": DEFAULT_TASK_COUNT,
                             "portworx_image": PX_IMAGE,
                             "portworx_cluster": PX_CLUSTER_NAME,
