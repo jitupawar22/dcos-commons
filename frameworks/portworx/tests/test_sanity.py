@@ -152,6 +152,7 @@ def test_start_plan():
         raise
 
 # Perform Volume create operation
+@pytest.mark.install
 @pytest.mark.sanity
 def test_vol_create():
     # Verify px status before calling create px volume
@@ -174,6 +175,7 @@ def test_vol_create():
 
 
 # Perform Volume size update operation
+@pytest.mark.install
 @pytest.mark.sanity
 def test_vol_update_size():
     pod_count, pod_list = px_utils.get_px_pod_list()
@@ -193,6 +195,7 @@ def test_vol_update_size():
         raise
 
 # Perform Volume delete operation
+@pytest.mark.install
 @pytest.mark.sanity
 def test_vol_delete():
     pod_count, pod_list = px_utils.get_px_pod_list()
