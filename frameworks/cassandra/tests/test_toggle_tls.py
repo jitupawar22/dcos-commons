@@ -57,6 +57,7 @@ def cassandra_service(service_account):
     options = {
         "service": {
             "name": config.SERVICE_NAME,
+            "virtual_network_enabled": True,
             # Note that since we wish to toggle TLS which *REQUIRES* a service account,
             # we need to install Cassandra with a service account to start with.
             "service_account": service_account["name"],

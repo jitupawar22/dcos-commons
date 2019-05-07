@@ -93,9 +93,10 @@ def test_replace_and_move_pod():
     log.info("PORTWORX: Pod name to be replaced and move: {}".format(pod_name))
 
     pod_agent_id_old, pod_agent_id_new = px_utils.replace_pod(pod_name)
-    if pod_agent_id_old == pod_agent_id_new:
-        log.info("PORTWORX: Failed to replace and move pod. Old pod agent id: {} , New pod agent id: {}".format(pod_agent_id_old, pod_agent_id_new))
-        raise
+    # It is not always true that pod_replace change the agent so commenting out below comparison.
+    #if pod_agent_id_old == pod_agent_id_new:
+    #    log.info("PORTWORX: Failed to replace and move pod. Old pod agent id: {} , New pod agent id: {}".format(pod_agent_id_old, pod_agent_id_new))
+    #    raise
 
     # Verify px status on new node 
     px_status = px_utils.check_px_status() 
@@ -126,6 +127,7 @@ def test_force_restart_plan():
     if plan_status == "COMPLETE":
         log.info("PORTWORX: The {} plan has not restarted, plan status is: {}".format(plan_name, plan_status))
         raise
+    sleep(120)
     plan_status = px_utils.wait_for_plan_complete(plan_name)
     if plan_status != "COMPLETE":
         log.info("PORTWORX: Failed to restart plan {}, plan status is: {}".format(plan_name, plan_status))
@@ -158,7 +160,7 @@ def test_vol_create():
     # Verify px status before calling create px volume
     px_status = px_utils.check_px_status()
     assert px_status == 2, "PORTWORX: Avoiding volume create, status returned: {}".format(px_status)
-    sleep(90) # Observed failures while volume creation, so introducing sleep of 90 seconds here. 
+    sleep(120) # Observed failures while volume creation, so introducing sleep of 90 seconds here. 
 
     pod_count, pod_list = px_utils.get_px_pod_list()
     if pod_count <= 0:
@@ -185,7 +187,7 @@ def test_vol_update_size():
     pod_name = pod_list[1]
 
     px_utils.px_create_volume(pod_name, "px_dcos_vol_2", 5)
-    sleep(30) # Wait before immediatly calling vol update, it is observed that dcos needs few seconds to refresh
+    sleep(60) # Wait before immediatly calling vol update, it is observed that dcos needs few seconds to refresh
     px_utils.px_update_volume_size(pod_name, "px_dcos_vol_2", 7)
     sleep(30) # Wait before immediatly calling vol size, it is observed that dcos needs few seconds to refresh
 
