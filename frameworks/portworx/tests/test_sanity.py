@@ -93,11 +93,8 @@ def test_replace_and_move_pod():
     log.info("PORTWORX: Pod name to be replaced and move: {}".format(pod_name))
 
     pod_agent_id_old, pod_agent_id_new = px_utils.replace_pod(pod_name)
-    # It is not always true that pod_replace change the agent so commenting out below comparison.
-    #if pod_agent_id_old == pod_agent_id_new:
-    #    log.info("PORTWORX: Failed to replace and move pod. Old pod agent id: {} , New pod agent id: {}".format(pod_agent_id_old, pod_agent_id_new))
-    #    raise
-
+    # It is not always true that pod_replace change the agent. It may come back on same node.
+    
     # Verify px status on new node 
     px_status = px_utils.check_px_status() 
     assert px_status == 2, "PORTWORX: Failed replace and move pod, status returned: {}".format(px_status)

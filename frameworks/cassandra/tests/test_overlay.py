@@ -61,10 +61,6 @@ def test_functionality():
             ],
             after_jobs=[]
             ):
-#            after_jobs=[
-#                config.get_delete_data_job(),
-#                config.get_verify_deletion_job()
-#            ]):
 
         sdk_plan.start_plan(config.SERVICE_NAME, 'cleanup', parameters=parameters)
         sdk_plan.wait_for_completed_plan(config.SERVICE_NAME, 'cleanup')

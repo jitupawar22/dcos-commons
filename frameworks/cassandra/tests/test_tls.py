@@ -61,7 +61,7 @@ def cassandra_service_tls(service_account):
             }
         }
     )
-    
+
     sdk_plan.wait_for_completed_deployment(config.SERVICE_NAME)
 
     # Wait for service health check to pass
