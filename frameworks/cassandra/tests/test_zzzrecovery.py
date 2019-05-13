@@ -9,6 +9,7 @@ import sdk_install
 import sdk_marathon
 import sdk_plan
 import sdk_tasks
+import sdk_networks
 from tests import config
 
 RECOVERY_TIMEOUT_SECONDS = 20 * 60
@@ -20,7 +21,10 @@ log = logging.getLogger(__name__)
 def configure_package(configure_security):
     try:
         sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
-        sdk_install.install(config.PACKAGE_NAME, config.SERVICE_NAME, config.DEFAULT_TASK_COUNT)
+        sdk_install.install(config.PACKAGE_NAME, 
+                    config.SERVICE_NAME, 
+                    config.DEFAULT_TASK_COUNT,
+                    additional_options=sdk_networks.ENABLE_VIRTUAL_NETWORKS_OPTIONS)
 
         yield  # let the test session execute
     finally:
