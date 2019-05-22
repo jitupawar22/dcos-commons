@@ -32,10 +32,6 @@ def service_account(configure_security):
         sdk_cmd.run_cli(
             "security org groups add_user superusers {name}".format(name=name))
         yield {"name": name, "secret": secret}
-    finally:
-        sdk_security.delete_service_account(
-            service_account_name=name, service_account_secret=secret)
-
 
 @pytest.fixture(scope='module')
 def dcos_ca_bundle():
@@ -208,3 +204,8 @@ def update_service(service: dict, options: dict):
         # An update plan is a deploy plan
         sdk_plan.wait_for_kicked_off_deployment(service["service"]["name"])
         sdk_plan.wait_for_completed_deployment(service["service"]["name"])
+
+@pytest.mark.sanity
+def test_toggle_tls_uninstall_pkg():
+    sdk_security.delete_service_account(
+        service_account_name=name, service_account_secret=secret)

@@ -27,9 +27,6 @@ def configure_package(configure_security):
                     additional_options=sdk_networks.ENABLE_VIRTUAL_NETWORKS_OPTIONS)
 
         yield  # let the test session execute
-    finally:
-        sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
-
 
 @pytest.mark.sanity
 @pytest.mark.dcos_min_version('1.9', reason='dcos task exec not supported < 1.9')
@@ -110,3 +107,9 @@ def test_shutdown_host():
     log.info('Checking that the original pod has moved to a new agent:\n'
              'old={}\nnew={}'.format(replace_task, new_task))
     assert replace_task.agent != new_task.agent
+
+@pytest.mark.sanity
+def test_zzzrecovery_uninstall_pkg():
+    sdk_install.uninstall(config.PACKAGE_NAME, config.SERVICE_NAME)
+
+
