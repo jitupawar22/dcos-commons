@@ -119,6 +119,7 @@ def test_restart_px_pod():
 @pytest.mark.sanity
 def test_force_restart_plan():
     plan_name = "deploy"
+    sleep(30)
     px_utils.force_restart_plan(plan_name)
     plan_status = px_utils.check_plan_status(plan_name)
     if plan_status == "COMPLETE":
@@ -134,6 +135,7 @@ def test_force_restart_plan():
 @pytest.mark.sanity
 def test_stop_plan():
     plan_name = "deploy"
+    sleep(30)
     px_utils.stop_plan(plan_name)
     plan_status = px_utils.check_plan_status(plan_name)
     if plan_status != "WAITING":
@@ -144,6 +146,7 @@ def test_stop_plan():
 @pytest.mark.sanity
 def test_start_plan():
     plan_name = "deploy"
+    sleep(30)
     px_utils.start_plan(plan_name)
     plan_status = px_utils.wait_for_plan_complete(plan_name)
     if plan_status != "COMPLETE":
